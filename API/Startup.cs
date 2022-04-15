@@ -13,6 +13,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API
 {
@@ -42,6 +47,18 @@ namespace API
             });
 
             services.AddCors();
+
+            services.AddScoped<ITokenService, TokenService>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+            AddJwtBearer(options=>{
+                options.TokenValidationParameters = new TokenValidationParameters{
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +76,7 @@ namespace API
             app.UseRouting();
             app.UseCors(policyName=> policyName.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
