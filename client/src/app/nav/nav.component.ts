@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AccountService} from '../_services/account.service'
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -19,7 +20,8 @@ export class NavComponent implements OnInit {
   //isLoggedIn: boolean;
 
   //made this service public to use it in the template.
-  constructor(public accountService: AccountService, private router: Router) { }
+  constructor(public accountService: AccountService, private router: Router,
+    private tostrService: ToastrService) { }
 
   ngOnInit(): void {
    // this.getCurrentUser();
@@ -33,6 +35,7 @@ export class NavComponent implements OnInit {
     },
     err=>{
       console.log(err);
+      this.tostrService.error(err.error);
     });
   }
 
