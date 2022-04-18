@@ -35,7 +35,7 @@ export class NavComponent implements OnInit {
     },
     err=>{
       console.log(err);
-      this.tostrService.error(err.error);
+     // this.tostrService.error(err.error);
     });
   }
 

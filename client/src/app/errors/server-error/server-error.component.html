@@ -1,0 +1,8 @@
+<h4>Internal Server error..!</h4>
+
+<ng-container *ngIf="error">
+    <h5>Something went wront at server side..</h5>
+    <h6>Internal server error</h6>
+    <p>Following is the stack trace for your reference</p>
+    <code class="mt-5" style="background-color: whitesmoke;">{{error.details}}</code>
+</ng-container>
