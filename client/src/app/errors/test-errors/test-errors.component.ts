@@ -12,6 +12,7 @@ export class TestErrorsComponent implements OnInit {
   //buggy controler at server side. 
 
   baseUrl = "https://localhost:5001/api/";
+  validationErrors = [];
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -54,6 +55,7 @@ export class TestErrorsComponent implements OnInit {
      console.log(res); 
     },err=>{
       console.log(err);
+      this.validationErrors = err;
     })
   }
 

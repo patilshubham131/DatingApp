@@ -10,4 +10,12 @@
 
     <button (click)="get404Error()" class="btn btn-outline-primary mr-3"> Test 404 Error</button>
 
+    <div class="row mt-5" *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+            <li *ngFor="let verror of validationErrors">
+                {{verror}}
+            </li>
+        </ul>
+    </div>
+
 </ng-container>
