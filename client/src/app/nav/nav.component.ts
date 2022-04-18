@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AccountService} from '../_services/account.service'
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class NavComponent implements OnInit {
   //isLoggedIn: boolean;
 
   //made this service public to use it in the template.
-  constructor(public accountService: AccountService) { }
+  constructor(public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
    // this.getCurrentUser();
@@ -26,7 +27,8 @@ export class NavComponent implements OnInit {
 
   OnSubmit(){
     this.accountService.login(this.model).subscribe(response=>{
-      console.log(response);
+    this.router.navigate(['/members']);
+      // console.log(response);
       //this.isLoggedIn = true;
     },
     err=>{
@@ -37,6 +39,7 @@ export class NavComponent implements OnInit {
   onLogout(){
     this.accountService.logout();
    // this.isLoggedIn = false;
+   this.router.navigate(['/']);
   }
 
   //we are using the service subject in template so no need of this method anymore
