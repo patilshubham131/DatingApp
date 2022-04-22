@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using API.Interfaces;
+using API.DTOs;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -17,13 +19,15 @@ namespace API.Controllers
     [Authorize]
     public class UsersController : BaseApiController
     {
-       // private readonly DataContext context;
+        // private readonly DataContext context;
         private readonly IUserRepository userRepository;
+        public IMapper Mapper { get; set; }
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
+            this.Mapper = mapper;
             this.userRepository = userRepository;
-           // this.context = context;
+            // this.context = context;
         }
 
         // public UsersController(DataContext context)
@@ -33,19 +37,22 @@ namespace API.Controllers
 
         [HttpGet]
         // [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
-           // return await context.Users.ToListAsync();
-           var users = await userRepository.GetUsersAsync();
-           return Ok(users);
+            // return await context.Users.ToListAsync();
+            var users = await userRepository.GetUsersAsync();
+
+            var usersToReturn = Mapper.Map<IEnumerable<MemberDto>>(users);
+           return Ok(usersToReturn);
         }
 
         [HttpGet("{username}")]
         // [AllowAnonymous]
-        public async Task<ActionResult<AppUser>> GetUser(string username)
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             //return context.Users.Find(id);
-            return await userRepository.GetUserByUserName(username);
+            var user = await userRepository.GetUserByUserName(username);
+            return Mapper.Map<MemberDto>(user);
         }
     }
 }
