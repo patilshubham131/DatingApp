@@ -40,7 +40,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
             // return await context.Users.ToListAsync();
-            var users = await userRepository.GetUsersAsync();
+            var users = await userRepository.GetMembersAsync();
 
             var usersToReturn = Mapper.Map<IEnumerable<MemberDto>>(users);
            return Ok(usersToReturn);
@@ -51,7 +51,7 @@ namespace API.Controllers
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             //return context.Users.Find(id);
-            var user = await userRepository.GetUserByUserName(username);
+            var user = await userRepository.GetMemberAsync(username);
             return Mapper.Map<MemberDto>(user);
         }
     }
