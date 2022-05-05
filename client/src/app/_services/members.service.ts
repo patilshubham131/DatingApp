@@ -5,7 +5,7 @@ import { Member } from '../_models/member';
 
 const httpoptions = {
   headers:new HttpHeaders({
-    Authorization: "Bearer "+ JSON.parse(localStorage.getItem('user')).token
+    Authorization: "Bearer "+ JSON.parse(localStorage.getItem('user'))?.token
   })
 }
 
