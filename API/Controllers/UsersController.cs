@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using API.Interfaces;
 using API.DTOs;
 using AutoMapper;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -53,6 +54,23 @@ namespace API.Controllers
             //return context.Users.Find(id);
             var user = await userRepository.GetMemberAsync(username);
             return Mapper.Map<MemberDto>(user);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto){
+            
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var user = await userRepository.GetUserByUserName(username);
+
+            Mapper.Map(memberUpdateDto, user);
+
+            userRepository.Update(user);
+
+            if(await userRepository.SaveAllAsync())
+                return NoContent();
+            
+            return BadRequest("failure while updating user.");
         }
     }
 }
