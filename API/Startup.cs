@@ -38,6 +38,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.Configure<CloudinarySettings>(_config.GetSection("CloudinarySettings"));
             services.AddDbContext<DataContext>(option =>
             {
                 option.UseSqlite(_config.GetConnectionString("DefaultConnection"));
@@ -52,7 +53,8 @@ namespace API
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<IPhotoService, PhotoService>();
+            
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
