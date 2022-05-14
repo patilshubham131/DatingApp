@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
   @Output() cancelRegister = new EventEmitter();
 
   model: any ={};
+  maxdate: Date;
 
   registerForm: FormGroup;
   constructor(private accService: AccountService, private toastrService: ToastrService,
@@ -23,11 +24,18 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.maxdate = new Date();
+    this.maxdate.setFullYear(this.maxdate.getFullYear() -18);
   }
 
   initializeForm(){
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
+      knownAs: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      city: ['', Validators.required],
+      country: ['', Validators.required],
+      gender: ['male'],
       password: ['',[Validators.required, Validators.minLength(4)]],
       confirmPassword: ['',[Validators.required, this.matchValue('password')]]
     })
