@@ -1,19 +1,81 @@
-<form (ngSubmit)="onSubmit()" #registerForm="ngForm" autocomplete="off">
+<!-- <form (ngSubmit)="onSubmit()" #registerForm="ngForm" autocomplete="off"> -->
+    <form (ngSubmit)="onSubmit()" [formGroup]='registerForm' autocomplete="off">
 
     <h2 class="text-center text-primary"> Sign up</h2>
 
-    <div class="form-group">
+     <!-- <select class="form-control mt-1">
+            <option *ngFor="let user of usersFromHomeComp" [value]= "user.userName">
+                {{user.userName}}
+            </option>
+        </select> -->
+
+    <!-- <div class="form-group">
         <input type="text" class="form-control" name="username" [(ngModel)]="model.username" placeholder="Username">
+       
+        <input type="password" class="form-control mt-1" name="password" [(ngModel)]="model.password" placeholder="password">
+    </div> -->
+
+<!-- reactive form approach -->
+    <!-- <div class="form-group">
+        <input 
+        [class.is-invalid]= 'registerForm.get("username").errors 
+        && registerForm.get("username").touched'
+        type="text" 
+        class="form-control" 
+        formControlName="username" 
+        placeholder="Username">
+        <div class="invalid-feedback"> Please enter username</div>
+    </div>
+    <div class="form-group"> -->
+    
         <!-- <select class="form-control mt-1">
             <option *ngFor="let user of usersFromHomeComp" [value]= "user.userName">
                 {{user.userName}}
             </option>
         </select> -->
-        <input type="password" class="form-control mt-1" name="password" [(ngModel)]="model.password" placeholder="password">
+        <!-- <input 
+        [class.is-invalid]='registerForm.get("password").errors 
+        && registerForm.get("password").touched'
+        type="password" 
+        class="form-control mt-1" 
+        formControlName="password" 
+        placeholder="password"
+        >
+        <div *ngIf="registerForm.get('password').hasError('required')" 
+        class="invalid-feedback"> Please enter password</div>
+
+        <div *ngIf="registerForm.get('password').hasError('minlength')" 
+        class="invalid-feedback"> Password must be 4 charater long</div>
     </div>
+    <div class="form-group">
+
+        <input 
+        [class.is-invalid]='registerForm.get("confirmPassword").errors 
+        && registerForm.get("confirmPassword").touched'
+        type="password" 
+        class="form-control mt-1" 
+        formControlName="confirmPassword" 
+        placeholder="password"
+        >
+        <div *ngIf="registerForm.get('confirmPassword').hasError('required')" 
+        class="invalid-feedback"> Please enter password to confirm</div>
+
+        <div *ngIf="registerForm.get('confirmPassword').hasError('ismatching')" 
+        class="invalid-feedback"> Confirm Passwrod must match password</div>
+
+    </div> -->
+
+    <app-text-input [formControl]="registerForm.controls['username']" [label]='"Username"'></app-text-input>
+    <app-text-input [formControl]="registerForm.controls['password']" [label]='"Password"' [type]='"password"'></app-text-input>
+    <app-text-input [formControl]="registerForm.controls['confirmPassword']" [label]='"Confirm Password"'></app-text-input>
 
     <div class="form-group text-center">
         <button type="submit" class="btn btn-success mr-2">Register</button>
         <button type="button" class="btn" (click)="cancel()">Cancel</button>
     </div>
 </form>
+
+<p>From value:</p>
+{{registerForm.value | json}}
+<p>Status:</p>
+{{registerForm.status | json}}
