@@ -2,6 +2,7 @@
     margin: 25px;
     width: 85%;
     height: 85%;
+    border-radius: 50%;
 }
 
 .card-body{
