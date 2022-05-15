@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
 using API.Services;
 using API.DTOs;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -16,9 +17,11 @@ namespace API.Controllers
     {
         private readonly DataContext context;
         private readonly ITokenService tokenService;
+        private readonly IMapper mapper;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
+            this.mapper = mapper;
             this.tokenService = tokenService;
             this.context = context;
 
@@ -29,6 +32,8 @@ namespace API.Controllers
         {
             var isExistingUser = await ExistingUser(newUser.UserName);
 
+            var user = mapper.Map<AppUser>(newUser);
+
             if (isExistingUser)
             {
                 return BadRequest("User name is taken");
@@ -36,19 +41,26 @@ namespace API.Controllers
 
             using var hmac = new HMACSHA512();
 
-            var user = new AppUser()
-            {
-                UserName = newUser.UserName.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(newUser.Password)),
-                PasswordSalt = hmac.Key
-            };
+            // var user = new AppUser()
+            // {
+            //     UserName = newUser.UserName.ToLower(),
+            //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(newUser.Password)),
+            //     PasswordSalt = hmac.Key
+            // };
+
+                user.UserName = newUser.UserName.ToLower();
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(newUser.Password));
+                user.PasswordSalt = hmac.Key;
+          
             context.Users.Add(user);
 
             await context.SaveChangesAsync();
 
-            return new UserDto{
+            return new UserDto
+            {
                 UserName = user.UserName,
-                Token = tokenService.CreateToken(user)
+                Token = tokenService.CreateToken(user),
+                KnownAs = user.KnownAs
             };
         }
 
@@ -62,7 +74,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto user)
         {
 
-            var tempuser = context.Users.Include(p=> p.Photos).SingleOrDefault(x => x.UserName == user.UserName);
+            var tempuser = context.Users.Include(p => p.Photos).SingleOrDefault(x => x.UserName == user.UserName);
 
             if (tempuser == null)
             {
@@ -81,10 +93,12 @@ namespace API.Controllers
                 }
             }
 
-           return new UserDto{
+            return new UserDto
+            {
                 UserName = tempuser.UserName,
                 Token = tokenService.CreateToken(tempuser),
-                PhotoUrl = tempuser.Photos.FirstOrDefault(x=> x.IsMain)?.Url
+                PhotoUrl = tempuser.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                KnownAs = tempuser.KnownAs
             };
         }
 
