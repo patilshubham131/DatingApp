@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using API.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using API.Helpers;
 namespace API.Data
 {
     public class UserRepository : IUserRepository
@@ -50,12 +51,19 @@ namespace API.Data
             context.Entry(user).State = EntityState.Modified;
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
 
-            return await context.Users
+            // return await context.Users
+            // .ProjectTo<MemberDto>(Mapper.ConfigurationProvider)
+            // .ToListAsync();
+
+            var query = context.Users
             .ProjectTo<MemberDto>(Mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsNoTracking();
+
+            return await PagedList<MemberDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
+            
         }
          public async Task<MemberDto> GetMemberAsync(string username)
         {
