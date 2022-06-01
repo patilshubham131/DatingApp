@@ -8,6 +8,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
 import { User } from '../_models/User';
+import { Message } from '../_models/message';
 
 const httpoptions = {
   headers:new HttpHeaders({
@@ -176,4 +177,5 @@ export class MembersService {
 
     return this.getPaginatedResult<Partial<Member[]>>(this.baseUrl + 'likes', params);
   }
+
 }
