@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Middleware;
 using API.Helpers;
+using API.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace API
 {
@@ -37,6 +39,16 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddIdentityCore<AppUser>(opt=>{
+                opt.Password.RequireNonAlphanumeric = false;
+            })
+            .AddRoles<AppRole>()
+            .AddRoleManager<RoleManager<AppRole>>()
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddRoleValidator<RoleValidator<AppRole>>()
+            .AddEntityFrameworkStores<DataContext>();
+            
 
             services.Configure<CloudinarySettings>(_config.GetSection("CloudinarySettings"));
             services.AddDbContext<DataContext>(option =>
@@ -68,6 +80,11 @@ namespace API
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+
+            services.AddAuthorization(opt=>{
+                opt.AddPolicy("RequireAdminRole",policy=>policy.RequireRole("Admin"));
+                opt.AddPolicy("ModerateAdminRole", policy=>policy.RequireRole("Admin","Moderator"));
             });
         }
 

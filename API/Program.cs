@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
+using Microsoft.AspNetCore.Identity;
+using API.Entities;
 namespace API
 {
     public class Program
@@ -24,8 +26,10 @@ namespace API
             try
             {
                 var context = service.GetRequiredService<DataContext>();
+                var userManager = service.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = service.GetRequiredService<RoleManager<AppRole>>();
                 await context.Database.MigrateAsync();
-                await Seed.SeedUsers(context); 
+                await Seed.SeedUsers(userManager, roleManager); 
             }
             catch(Exception ex){
              var logger = service.GetRequiredService<ILogger<Program>>();
